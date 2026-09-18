@@ -1,1 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>BTC Signal Analyzer</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b0f14;
+    color: white;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 30px 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #9ca3af;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: #151b23;
+    border: 1px solid #27303c;
+    border-radius: 14px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.settings {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.setting {
+    background: #0f141b;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.setting span {
+    display: block;
+    color: #9ca3af;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.setting strong {
+    font-size: 18px;
+}
+
+.upload {
+    border: 2px dashed #3b4654;
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+input[type="file"] {
+    margin-top: 20px;
+}
+
+button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+#preview {
+    max-width: 100%;
+    margin-top: 20px;
+    border-radius: 10px;
+    display: none;
+}
+
+.result {
+    display: none;
+    text-align: center;
+}
+
+.signal {
+    font-size: 38px;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+.score {
+    font-size: 25px;
+    margin-bottom: 20px;
+}
+
+.warning {
+    color: #fbbf24;
+}
+
+.note {
+    color: #9ca3af;
+    font-size: 13px;
+    margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+    .settings {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>BTC Signal Analyzer</h1>
+
+    <div class="subtitle">
+        Screenshot-Based 2-Minute Signal System
+    </div>
+
+    <div class="card">
+
+        <div class="settings">
+
+            <div class="setting">
+                <span>Market</span>
+                <strong>BTC/USD</strong>
+            </div>
+
+            <div class="setting">
+                <span>Chart</span>
+                <strong>1 Minute</strong>
+            </div>
+
+            <div class="setting">
+                <span>Expiry</span>
+                <strong>2 Minutes</strong>
+            </div>
+
+            <div class="setting">
+                <span>Capital</span>
+                <strong>$5,000</strong>
+            </div>
+
+            <div class="setting">
+                <span>Normal Risk</span>
+                <strong>$50</strong>
+            </div>
+
+            <div class="setting">
+                <span>Maximum Risk</span>
+                <strong>$80</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Upload Quotex Screenshot</h2>
+
+        <div class="upload">
+
+            <div>
+                Select your BTC/USD chart screenshot.
+            </div>
+
+            <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+            >
+
+            <img id="preview">
+
+        </div>
+
+        <button onclick="analyze()">
+            ANALYZE SCREENSHOT
+        </button>
+
+    </div>
+
+    <div class="card result" id="result">
+
+        <h2>Signal Result</h2>
+
+        <div class="signal" id="signal">
+            WAIT
+        </div>
+
+        <div class="score">
+            Model Score:
+            <strong id="score">--</strong>/100
+        </div>
+
+        <p id="message"></p>
+
+        <hr>
+
+        <p>
+            <strong>Candle 1:</strong>
+            <span id="candle1">--</span>
+        </p>
+
+        <p>
+            <strong>Candle 2:</strong>
+            <span id="candle2">--</span>
+        </p>
+
+        <p class="note">
+            This is a prototype. The current analysis is not yet connected
+            to a trained market-analysis model.
+        </p>
+
+    </div>
+
+</div>
+
+<script>
+
+const imageInput = document.getElementById("imageInput");
+const preview = document.getElementById("preview");
+
+imageInput.addEventListener("change", function() {
+
+    const file = this.files[0];
+
+    if (file) {
+
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+
+            preview.src = e.target.result;
+            preview.style.display = "block";
+
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+});
+
+function analyze() {
+
+    const file = imageInput.files[0];
+
+    if (!file) {
+
+        alert("Please upload a screenshot first.");
+
+        return;
+    }
+
+    document.getElementById("result").style.display = "block";
+
+    /*
+       TEMPORARY PROTOTYPE
+
+       The real signal engine will be added later.
+       We intentionally do NOT generate fake
+       trading predictions here.
+    */
+
+    document.getElementById("signal").innerText = "NO TRADE";
+
+    document.getElementById("score").innerText = "—";
+
+    document.getElementById("message").innerText =
+        "Screenshot received. The real chart-analysis engine is not connected yet.";
+
+    document.getElementById("candle1").innerText = "WAIT";
+
+    document.getElementById("candle2").innerText = "WAIT";
+
+}
+
+</script>
+
+</body>
+</html>
