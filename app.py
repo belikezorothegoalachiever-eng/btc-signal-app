@@ -13,14 +13,19 @@ st.caption("Screenshot-Based Binary Signal Research Tool")
 st.divider()
 
 # =========================
-# MARKET SETTINGS
+# MARKET
 # =========================
 
-st.subheader("Market Settings")
+st.subheader("Market")
 
 asset = st.text_input(
     "Asset",
-    placeholder="Example: EUR/USD, BTC/USD, GBP/JPY"
+    placeholder="Example: NZD/JPY"
+)
+
+asset_type = st.selectbox(
+    "Asset Type",
+    ["Regular", "OTC"]
 )
 
 timeframe = st.selectbox(
@@ -36,30 +41,19 @@ expiry = st.selectbox(
 st.divider()
 
 # =========================
-# RISK SETTINGS
+# PATTERN INFORMATION
 # =========================
 
-st.subheader("Risk Settings")
+st.subheader("🧠 Pattern Information")
 
-capital = st.number_input(
-    "Account Capital ($)",
-    min_value=1.0,
-    value=5000.0,
-    step=100.0
+pattern_name = st.text_input(
+    "Pattern Name",
+    placeholder="Example: Support Rejection"
 )
 
-normal_risk = st.number_input(
-    "Normal Risk ($)",
-    min_value=1.0,
-    value=50.0,
-    step=1.0
-)
-
-max_risk = st.number_input(
-    "Maximum Risk ($)",
-    min_value=1.0,
-    value=80.0,
-    step=1.0
+pattern_notes = st.text_area(
+    "Describe the pattern you see",
+    placeholder="Describe what happened before the signal..."
 )
 
 st.divider()
@@ -68,10 +62,10 @@ st.divider()
 # SCREENSHOT
 # =========================
 
-st.subheader("📷 Upload Quotex Screenshot")
+st.subheader("📷 Chart Screenshot")
 
 uploaded_file = st.file_uploader(
-    "Upload your chart screenshot",
+    "Upload Quotex screenshot",
     type=["png", "jpg", "jpeg"]
 )
 
@@ -81,42 +75,34 @@ if uploaded_file:
 
     st.image(
         image,
-        caption="Uploaded chart",
+        caption="Uploaded Quotex chart",
         use_container_width=True
     )
+
+    st.success("Screenshot uploaded.")
 
     st.divider()
 
     # =========================
-    # ANALYZE BUTTON
+    # ANALYSIS
     # =========================
 
     if st.button(
-        "🔍 ANALYZE SCREENSHOT",
+        "🔍 ANALYZE",
         use_container_width=True
     ):
 
         st.subheader("Signal Result")
 
-        # Temporary result.
-        # Real analysis engine will be added later.
-
-        score = 0
-
-        if score >= 80:
-
-            st.success("SIGNAL")
-
-        else:
-
-            st.error("NO TRADE")
+        st.warning("NO TRADE")
 
         st.metric(
             "Model Score",
-            f"{score}/100"
+            "Not calculated yet"
         )
 
-        st.write("**Asset:**", asset if asset else "Not specified")
+        st.write("**Asset:**", asset)
+        st.write("**Type:**", asset_type)
         st.write("**Timeframe:**", timeframe)
         st.write("**Expiry:**", expiry)
 
@@ -128,14 +114,47 @@ if uploaded_file:
         st.write("**Candle 2:** WAIT")
 
         st.info(
-            "The screenshot-analysis engine is not connected yet. "
-            "This version only tests the website interface."
+            "The analysis engine will be connected after "
+            "the data collection system is ready."
+        )
+
+    st.divider()
+
+    # =========================
+    # RESULT RECORDING
+    # =========================
+
+    st.subheader("📝 Record Actual Result")
+
+    result = st.selectbox(
+        "Candle 1 Result",
+        ["Not recorded", "WIN", "LOSS"]
+    )
+
+    if result == "LOSS":
+
+        candle2_result = st.selectbox(
+            "Candle 2 Result",
+            ["Not recorded", "WIN", "LOSS"]
+        )
+
+    else:
+
+        candle2_result = "Not required"
+
+    if st.button(
+        "💾 SAVE RESULT",
+        use_container_width=True
+    ):
+
+        st.success(
+            "Result recorded for this setup."
         )
 
 else:
 
     st.info(
-        "Upload a Quotex screenshot to begin."
+        "Upload a screenshot to begin."
     )
 
 st.divider()
